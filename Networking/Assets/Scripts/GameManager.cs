@@ -9,7 +9,11 @@ public class GameManager : Singleton<GameManager>
         Position,
         Chat,
         Connection,
-        Quit
+        Quit,
+        Shoot,
+        Hit,
+        Kill,
+        HighScore
     }
 
     [SerializeField] private GameObject clientPrefab;
@@ -34,12 +38,16 @@ public class GameManager : Singleton<GameManager>
             if (pendingClients[0] == localId)
             {
                 GameObject client = Instantiate(clientPrefab);
+                LocalClient localClient = client.GetComponent<LocalClient>();
+                localClient.SetId(pendingClients[0]);
                 clientObjects.Add(pendingClients[0], client.GetComponent<LocalClient>());
             }
             else
             {
                 GameObject client = Instantiate(localClientPrefab);
-                clientObjects.Add(pendingClients[0], client.GetComponent<LocalClient>());
+                LocalClient localClient = client.GetComponent<LocalClient>();
+                localClient.SetId(pendingClients[0]);
+                clientObjects.Add(pendingClients[0], localClient);
             }
 
             pendingClients.RemoveAt(0);
@@ -64,7 +72,7 @@ public class GameManager : Singleton<GameManager>
 
     public void HandleMessage(string message)
     {
-        //Debug.Log($"Recieved: {message}");
+        Debug.Log($"Recieved: {message}");
 
         string[] commandPlusData = message.Split("<c>");
         CommandType commandType = (CommandType)int.Parse(commandPlusData[0]);
@@ -116,6 +124,27 @@ public class GameManager : Singleton<GameManager>
                 }
                 Client.updatePosition = true;
                 break;
+            case CommandType.Shoot:
+                string[] idPlusBulletData = commandPlusData[1].Split("<id>");
+                int shooterId = int.Parse(idPlusBulletData[0]);
+                string[] positionVelocity = idPlusBulletData[1].Split(",");
+                clientObjects[shooterId].GunController.FireBullet(new Vector2(float.Parse(positionVelocity[0]), float.Parse(positionVelocity[1])), new Vector2(float.Parse(positionVelocity[2]), float.Parse(positionVelocity[3])));
+                break;
+            case CommandType.Hit:
+                //string[] hitPlusDamage = commandPlusData[1].Split("<d>");
+                //int hitId = int.Parse(hitPlusDamage[0]);
+                //float damage = float.Parse(hitPlusDamage[1]);
+                //clientObjects[hitId].TakeDamage(damage);
+                break;
+            case CommandType.Kill:
+                //string[] killerPlusKilled = commandPlusData[1].Split("<k>");
+                //int killerId = int.Parse(killerPlusKilled[0]);
+                //int killedId = int.Parse(killerPlusKilled[1]);
+                //clientObjects[killerId].AddKill();
+                //clientObjects[killedId].Die();
+                break;
+            case CommandType.HighScore:
+
             default:
                 break;
         }

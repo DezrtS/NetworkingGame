@@ -22,7 +22,11 @@ namespace FinalProjectServer
             Position,
             Chat,
             Connection,
-            Quit
+            Quit,
+            Shoot,
+            Hit,
+            Kill,
+            HighScore
         }
 
         private static byte[] receiveBufferTCP = new byte[1024];
@@ -184,6 +188,20 @@ namespace FinalProjectServer
                 case CommandType.Quit:
                     HandleSend(clientSockets.Keys.ToList(), $"3<c>{clientSockets[socket]}", SendType.TCP);
                     socket.BeginDisconnect(false, DisconnectCallback, socket);
+                    break;
+                case CommandType.Shoot:
+                    int id2 = clientSockets[socket];
+                    HandleSend(clientSockets.Keys.ToList().FindAll(s => clientSockets[s] != id2), $"4<c>{commandPlusData[1]}", SendType.TCP);
+                    break;
+                case CommandType.Hit:
+                    HandleSend(clientSockets.Keys.ToList(), $"5<c>{commandPlusData[1]}", SendType.TCP);
+                    break;
+                case CommandType.Kill:
+                    HandleSend(clientSockets.Keys.ToList(), $"6<c>{commandPlusData[1]}", SendType.TCP);
+                    break;
+                case CommandType.HighScore:
+                    // Load from txt file (Or use list in server class for temp leaderboard) and send Highscores as text
+                    HandleSend(new List<Socket>() { socket }, $"7<c>", SendType.TCP);
                     break;
                 default:
                     break;

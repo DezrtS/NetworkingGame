@@ -1,0 +1,7 @@
+C:\Users\denzi\Documents\GitHub\NetworkingGame\FinalProjectServer\FinalProjectServer\bin\Debug\FinalProjectServer.exe.config
+C:\Users\denzi\Documents\GitHub\NetworkingGame\FinalProjectServer\FinalProjectServer\bin\Debug\FinalProjectServer.exe
+C:\Users\denzi\Documents\GitHub\NetworkingGame\FinalProjectServer\FinalProjectServer\bin\Debug\FinalProjectServer.pdb
+C:\Users\denzi\Documents\GitHub\NetworkingGame\FinalProjectServer\FinalProjectServer\obj\Debug\FinalProjectServer.csproj.AssemblyReference.cache
+C:\Users\denzi\Documents\GitHub\NetworkingGame\FinalProjectServer\FinalProjectServer\obj\Debug\FinalProjectServer.csproj.CoreCompileInputs.cache
+C:\Users\denzi\Documents\GitHub\NetworkingGame\FinalProjectServer\FinalProjectServer\obj\Debug\FinalProjectServer.exe
+C:\Users\denzi\Documents\GitHub\NetworkingGame\FinalProjectServer\FinalProjectServer\obj\Debug\FinalProjectServer.pdb
