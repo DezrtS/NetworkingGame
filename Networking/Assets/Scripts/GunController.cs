@@ -15,6 +15,7 @@ public class GunController : MonoBehaviour
         }
     }
 
+    [SerializeField] private bool isOwner;
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float fireSpeed;
     private ObjectPool bulletObjectPool;
@@ -29,7 +30,7 @@ public class GunController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && isOwner)
         {
 
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);

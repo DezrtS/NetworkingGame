@@ -47,7 +47,7 @@ public class Bullet : MonoBehaviour
         }
         else
         {
-            if (collision.CompareTag("Client"))
+            if (collision.CompareTag("Player"))
             {
                 collision.GetComponent<Health>().TakeDamage(damage);
                 OnBulletHit?.Invoke(gameObject);
