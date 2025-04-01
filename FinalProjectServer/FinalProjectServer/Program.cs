@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
+using System.IO;
 
 namespace FinalProjectServer
 {
@@ -51,6 +52,7 @@ namespace FinalProjectServer
             Console.ReadLine();
         }
 
+     
         public static void StartServer()
         {
             try
@@ -164,6 +166,7 @@ namespace FinalProjectServer
             }
         }
 
+
         private static void HandleMessage(string message, Socket socket, bool isTCP)
         {
             string[] commandPlusData = message.Split(new string[] { "<c>" }, StringSplitOptions.None);
@@ -201,6 +204,10 @@ namespace FinalProjectServer
                     break;
                 case CommandType.HighScore:
                     // Load from txt file (Or use list in server class for temp leaderboard) and send Highscores as text
+                    
+                    //Add the txt file for the first paramater then the message to be saved as the second
+                    //SaveToFile();
+
                     HandleSend(new List<Socket>() { socket }, $"7<c>", SendType.TCP);
                     break;
                 default:
@@ -337,5 +344,33 @@ namespace FinalProjectServer
             Socket socket = (Socket)result.AsyncState;
             socket.EndSendTo(result);
         }
+
+        public static void SaveToFile(string fileName, string data)
+        {
+            try
+            {
+                File.AppendAllText(fileName, data + "\n");
+                Console.WriteLine("Data saved successfully.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed to save data.");
+                Console.WriteLine(e.Message);
+            }
+        }
+        public static void LoadFromFile(string fileName)
+        {
+            try
+            {
+                File.AppendAllText(fileName, "\n");
+                Console.WriteLine("Data saved successfully.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed to save data.");
+                Console.WriteLine(e.Message);
+            }
+        }
     }
+
 }
