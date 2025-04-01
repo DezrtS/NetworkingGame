@@ -362,7 +362,7 @@ namespace FinalProjectServer
         {
             try
             {
-                File.AppendAllText(fileName, "\n");
+                File.ReadAllLines(fileName);
                 Console.WriteLine("Data saved successfully.");
             }
             catch (Exception e)
