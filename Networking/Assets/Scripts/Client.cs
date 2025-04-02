@@ -15,7 +15,7 @@ public class Client : MonoBehaviour
         None
     }
 
-    private static bool isConnected;
+    public static bool isConnected;
 
     private static Socket clientTCPSocket;
     private static Socket clientUDPSocket;
@@ -59,8 +59,8 @@ public class Client : MonoBehaviour
             clientUDPSocket.BeginReceiveFrom(receiveBufferUDP, 0, receiveBufferUDP.Length, SocketFlags.None, ref remoteServer, ReceiveFromCallback, clientUDPSocket);
             clientTCPSocket.BeginConnect(serverTCPEndPoint, ConnectCallbackTCP, null);
 
-            Thread sendThread = new Thread(new ThreadStart(SendLoop));
-            sendThread.Start();
+            //Thread sendThread = new Thread(new ThreadStart(SendLoop));
+            //sendThread.Start();
         }
         catch (Exception e)
         {

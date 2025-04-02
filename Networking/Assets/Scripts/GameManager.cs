@@ -82,9 +82,11 @@ public class GameManager : Singleton<GameManager>
             case CommandType.Position:
                 string[] idPlusData = commandPlusData[1].Split("<id>");
                 int clientId = int.Parse(idPlusData[0]);
-                if (clientId == localId) break;
-                string[] position = idPlusData[1].Split(",");
-                clientObjects[clientId].SetPosition(position);
+                if (clientId == localId || !clientObjects.ContainsKey(clientId)) break;
+                string[] positionPlusInput = idPlusData[1].Split(",");
+                clientObjects[clientId].SetPosition(new Vector3(float.Parse(positionPlusInput[0]), float.Parse(positionPlusInput[1]), float.Parse(positionPlusInput[2])));
+                clientObjects[clientId].MovementController.SetVelocity(new Vector2(float.Parse(positionPlusInput[3]), float.Parse(positionPlusInput[4])));
+                clientObjects[clientId].MovementController.SetMoveInput(new Vector2(float.Parse(positionPlusInput[5]), float.Parse(positionPlusInput[6])));
                 break;
             case CommandType.Chat:
                 UIManager.Instance.AddChatMessage(commandPlusData[1]);
@@ -131,12 +133,13 @@ public class GameManager : Singleton<GameManager>
                 clientObjects[shooterId].GunController.FireBullet(new Vector2(float.Parse(positionVelocity[0]), float.Parse(positionVelocity[1])), new Vector2(float.Parse(positionVelocity[2]), float.Parse(positionVelocity[3])));
                 break;
             case CommandType.Hit:
-                //string[] hitPlusDamage = commandPlusData[1].Split("<d>");
-                //int hitId = int.Parse(hitPlusDamage[0]);
-                //float damage = float.Parse(hitPlusDamage[1]);
-                //clientObjects[hitId].TakeDamage(damage);
+                string[] idPlusHealthData = commandPlusData[1].Split("<id>");
+                int hitId = int.Parse(idPlusHealthData[0]);
+                string[] damagePlusPreviousHealth = idPlusHealthData[1].Split(",");
+                clientObjects[hitId].Health.TakeDamage(float.Parse(damagePlusPreviousHealth[0]));
                 break;
             case CommandType.Kill:
+
                 //string[] killerPlusKilled = commandPlusData[1].Split("<k>");
                 //int killerId = int.Parse(killerPlusKilled[0]);
                 //int killedId = int.Parse(killerPlusKilled[1]);

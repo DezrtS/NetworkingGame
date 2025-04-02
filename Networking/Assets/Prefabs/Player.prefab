@@ -172,7 +172,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ab4d2b003a22284c88a39828354f5bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  updatePosition: 0
   position: {x: 0, y: 0, z: 0}
 --- !u!114 &2367907936342222870
 MonoBehaviour:
@@ -186,8 +185,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30cf1323f3f74c84c818a4522a1e9670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swapYZ: 1
-  speed: 10
+  isOwner: 1
+  acceleration: 100
+  accelerationTime: 0.01
+  maxSpeed: 12
 --- !u!114 &2034399038861215488
 MonoBehaviour:
   m_ObjectHideFlags: 0
