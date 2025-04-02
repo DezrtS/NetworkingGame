@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Health : MonoBehaviour
 {
@@ -8,6 +9,19 @@ public class Health : MonoBehaviour
     private void Awake()
     {
         currentHealth = maxHealth;
+    }
+
+    public void SetHealth(float health)
+    {
+        currentHealth = health; 
+    }
+
+    public void TakeDamageLocal(float damage)
+    {
+        float previousHealth = currentHealth;
+        TakeDamage(damage);
+        int id = GetComponent<LocalClient>().Id;
+        Client.HandleSend($"5<c>{id}<id>{damage},{previousHealth}", Client.SendType.TCP);
     }
 
     public void TakeDamage(float damage)
