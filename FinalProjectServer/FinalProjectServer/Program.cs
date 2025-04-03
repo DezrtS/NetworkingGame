@@ -41,22 +41,79 @@ namespace FinalProjectServer
         private static EndPoint remoteClient;
 
         private static Dictionary<Socket, int> clientSockets = new Dictionary<Socket, int>();
+        private static Dictionary<string, int> highscores = new Dictionary<string, int>();
+
+        private static string highscoresFilePath = "highscores.txt";
 
         static void Main(string[] args)
         {
             StartServer();
-
-            //Thread sendThread = new Thread(new ThreadStart(SendLoop));
-            //sendThread.Start();
-
             Console.ReadLine();
         }
 
-     
-        public static void StartServer()
+        public static void LoadHighscores(string filePath)
         {
             try
             {
+                highscores.Clear();
+
+                if (!File.Exists(filePath))
+                {
+                    File.WriteAllText(filePath, "");
+                }
+
+                string[] lines = File.ReadAllLines(filePath);
+                foreach (string line in lines)
+                {
+                    string[] data = line.Split(',');
+                    if (data.Length >= 2 && int.TryParse(data[1], out int score))
+                    {
+                        string name = data[0];
+                        highscores[name] = score;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed to Load Highscores");
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        public static void SaveHighscores(string filePath)
+        {
+            try
+            {
+                List<string> lines = new List<string>();
+                foreach (KeyValuePair<string, int> highscore in highscores)
+                {
+                    lines.Add($"{highscore.Key},{highscore.Value}");
+                }
+
+                File.WriteAllLines(filePath, lines);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed to Save Highscores");
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        public static string FormatHighscores()
+        {
+            string highscoreString = "";
+            foreach (KeyValuePair<string, int> highscore in highscores)
+            {
+                highscoreString += $"{highscore.Key}: {highscore.Value}\n";
+            }
+            return highscoreString;
+        }
+
+            public static void StartServer()
+        {
+            try
+            {
+                LoadHighscores(highscoresFilePath);
                 IPAddress[] ipAddresses = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
 
                 Console.WriteLine("[-2] - Enter your own address");
@@ -200,15 +257,20 @@ namespace FinalProjectServer
                     HandleSend(clientSockets.Keys.ToList(), $"5<c>{commandPlusData[1]}", SendType.TCP);
                     break;
                 case CommandType.Kill:
-                    HandleSend(clientSockets.Keys.ToList(), $"6<c>{commandPlusData[1]}", SendType.TCP);
+                    Console.WriteLine(message);
+                    if (highscores.ContainsKey(commandPlusData[1]))
+                    {
+                        highscores[commandPlusData[1]]++;
+                    }
+                    else
+                    {
+                        highscores.Add(commandPlusData[1], 1);
+                    }
+                    SaveHighscores(highscoresFilePath);
+                    HandleSend(clientSockets.Keys.ToList(), $"7<c>{FormatHighscores()}", SendType.TCP);
                     break;
                 case CommandType.HighScore:
-                    // Load from txt file (Or use list in server class for temp leaderboard) and send Highscores as text
-                    
-                    //Add the txt file for the first paramater then the message to be saved as the second
-                    //SaveToFile();
-
-                    HandleSend(new List<Socket>() { socket }, $"7<c>", SendType.TCP);
+                    HandleSend(new List<Socket>() { socket }, $"7<c>{FormatHighscores()}", SendType.TCP);
                     break;
                 default:
                     break;
@@ -343,33 +405,6 @@ namespace FinalProjectServer
         {
             Socket socket = (Socket)result.AsyncState;
             socket.EndSendTo(result);
-        }
-
-        public static void SaveToFile(string fileName, string data)
-        {
-            try
-            {
-                File.AppendAllText(fileName, data + "\n");
-                Console.WriteLine("Data saved successfully.");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Failed to save data.");
-                Console.WriteLine(e.Message);
-            }
-        }
-        public static void LoadFromFile(string fileName)
-        {
-            try
-            {
-                File.ReadAllLines(fileName);
-                Console.WriteLine("Data saved successfully.");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Failed to save data.");
-                Console.WriteLine(e.Message);
-            }
         }
     }
 

@@ -189,6 +189,7 @@ MonoBehaviour:
   acceleration: 100
   accelerationTime: 0.01
   maxSpeed: 12
+  sendDelay: 0
 --- !u!114 &2034399038861215488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -289,6 +290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2e36791c60036a4d8d0b6d714a086b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isOwner: 1
   maxHealth: 25
 --- !u!114 &8141194781344964379
 MonoBehaviour:

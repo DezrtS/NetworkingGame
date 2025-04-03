@@ -41,13 +41,13 @@ public class MovementController : MonoBehaviour
                 Debug.Log("Send delay: " + sendDelay);
             }
         }
-
-        Vector3 velocityChange = HandleMovement(moveInput, maxSpeed, acceleration, accelerationTime, accelerationTime, rig.linearVelocity);
-        ApplyForce(velocityChange, ForceMode2D.Force);
     }
 
     private void FixedUpdate()
     {
+        Vector3 velocityChange = HandleMovement(moveInput, maxSpeed, acceleration, accelerationTime, accelerationTime, rig.linearVelocity);
+        ApplyForce(velocityChange, ForceMode2D.Force);
+
         if (!isOwner) return;
         if (Client.end || !Client.isConnected || !Client.hasId) return;
         sendTimer -= Time.fixedDeltaTime;

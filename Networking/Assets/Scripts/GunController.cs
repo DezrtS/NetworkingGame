@@ -43,7 +43,7 @@ public class GunController : MonoBehaviour
             {
                 GameObject bullet = bulletObjectPool.GetObject();
                 bullet.GetComponent<Bullet>().OnBulletHit += OnBulletHit;
-                bullet.GetComponent<Bullet>().Fire(bulletRequests[i].position, bulletRequests[i].velocity * fireSpeed);
+                bullet.GetComponent<Bullet>().Fire(GetComponent<LocalClient>().Id, bulletRequests[i].position, bulletRequests[i].velocity * fireSpeed);
                 bulletRequests.RemoveAt(i);
                 i--;
             }

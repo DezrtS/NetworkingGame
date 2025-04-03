@@ -8,6 +8,7 @@ public class UIManager : Singleton<UIManager>
 {
     [SerializeField] private GameObject enterIPAddressUI;
     [SerializeField] private TMP_InputField ipAddressInputField;
+    [SerializeField] private TMP_InputField nameInputField;
     [SerializeField] private Button connectButton;
     [SerializeField] private Button quitButton;
 
@@ -18,11 +19,16 @@ public class UIManager : Singleton<UIManager>
     [SerializeField] private TextMeshProUGUI chatText;
     [SerializeField] private TextMeshProUGUI connectedClientsText;
 
+    [SerializeField] private TextMeshProUGUI nameText;
+    [SerializeField] private TextMeshProUGUI highscoreText;
+
     private Dictionary<int, string> connectedClientsLog = new Dictionary<int, string>();
     private bool connectedClientsChanged = false;
 
     private List<string> chatLog = new List<string>();
     private bool chatChanged = false;
+    private string highscores;
+    private bool highscoresChanged = false;
 
     private void Awake()
     {
@@ -30,6 +36,8 @@ public class UIManager : Singleton<UIManager>
         {
             string ipAddress = "127.0.0.1";
             if (ipAddressInputField.text != string.Empty) ipAddress = ipAddressInputField.text;
+            if (nameInputField.text != string.Empty) GameManager.Instance.LocalName = nameInputField.text;
+            nameText.text = GameManager.Instance.LocalName;
             GameManager.Instance.Connect(ipAddress);
             enterIPAddressUI.SetActive(false);
         });
@@ -81,6 +89,11 @@ public class UIManager : Singleton<UIManager>
                 connectedClientsText.text += $"{connectedClient}\n";
             }
         }
+
+        if (highscoresChanged)
+        {
+            highscoreText.text = highscores;
+        }
     }
 
     public void AddChatMessage(string message)
@@ -93,6 +106,12 @@ public class UIManager : Singleton<UIManager>
     {
         if (!connectedClientsLog.ContainsKey(id)) connectedClientsLog.Add(id, data);
         connectedClientsChanged = true;
+    }
+
+    public void SetHighscoreText(string text)
+    {
+        highscores = text;
+        highscoresChanged = true;
     }
 
     public void RemoveConnectedClient(int id)

@@ -10,6 +10,7 @@ public class Bullet : MonoBehaviour
 
     private Rigidbody2D rig;
     private float lifespanTimer;
+    private int ownerId;
 
     private void Awake()
     {
@@ -28,8 +29,9 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    public void Fire(Vector2 position, Vector2 velocity)
+    public void Fire(int ownerId, Vector2 position, Vector2 velocity)
     {
+        this.ownerId = ownerId;
         transform.position = position;
         rig.linearVelocity = velocity;
         lifespanTimer = lifespan;
@@ -41,7 +43,7 @@ public class Bullet : MonoBehaviour
         {
             if (collision.CompareTag("Client"))
             {
-                collision.GetComponent<Health>().TakeDamage(damage);
+                collision.GetComponent<Health>().TakeDamage(damage, ownerId);
                 OnBulletHit?.Invoke(gameObject);
             }
         }
@@ -49,7 +51,7 @@ public class Bullet : MonoBehaviour
         {
             if (collision.CompareTag("Player"))
             {
-                collision.GetComponent<Health>().TakeDamage(damage);
+                collision.GetComponent<Health>().TakeDamage(damage, ownerId);
                 OnBulletHit?.Invoke(gameObject);
             }
         }

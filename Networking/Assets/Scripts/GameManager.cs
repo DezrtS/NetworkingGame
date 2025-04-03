@@ -21,11 +21,13 @@ public class GameManager : Singleton<GameManager>
 
     private Dictionary<int, LocalClient> clientObjects = new Dictionary<int, LocalClient>();
     public int localId = 999;
-    
-    public string highscoreFilePath = "highscores.txt"; 
+
+    private string localName = "Guest";
 
     private List<int> pendingClients = new List<int>();
     private List<int> pendingQuitClients = new List<int>();
+
+    public string LocalName { get => localName; set => localName = value; }
 
     private void Awake()
     {
@@ -43,6 +45,7 @@ public class GameManager : Singleton<GameManager>
                 LocalClient localClient = client.GetComponent<LocalClient>();
                 localClient.SetId(pendingClients[0]);
                 clientObjects.Add(pendingClients[0], client.GetComponent<LocalClient>());
+                Client.HandleSend($"7<c>", Client.SendType.TCP);
             }
             else
             {
@@ -74,7 +77,7 @@ public class GameManager : Singleton<GameManager>
 
     public void HandleMessage(string message)
     {
-        Debug.Log($"Recieved: {message}");
+        //Debug.Log($"Recieved: {message}");
 
         string[] commandPlusData = message.Split("<c>");
         CommandType commandType = (CommandType)int.Parse(commandPlusData[0]);
@@ -134,26 +137,24 @@ public class GameManager : Singleton<GameManager>
                 string[] positionVelocity = idPlusBulletData[1].Split(",");
                 clientObjects[shooterId].GunController.FireBullet(new Vector2(float.Parse(positionVelocity[0]), float.Parse(positionVelocity[1])), new Vector2(float.Parse(positionVelocity[2]), float.Parse(positionVelocity[3])));
                 break;
-            case CommandType.Hit:
-                string[] idPlusHealthData = commandPlusData[1].Split("<id>");
-                int hitId = int.Parse(idPlusHealthData[0]);
-                string[] damagePlusPreviousHealth = idPlusHealthData[1].Split(",");
-                clientObjects[hitId].Health.TakeDamage(float.Parse(damagePlusPreviousHealth[0]));
-                break;
-            case CommandType.Kill:
+            //case CommandType.Hit:
+            //    Debug.Log("HIT REQUEST");
+            //    //string[] idPlusHealthData = commandPlusData[1].Split("<id>");
+            //    //int hitId = int.Parse(idPlusHealthData[0]);
+            //    //string[] damagePlusPreviousHealth = idPlusHealthData[1].Split(",");
+            //    //clientObjects[hitId].Health.TakeDamage(float.Parse(damagePlusPreviousHealth[0]));
+            //    break;
+            //case CommandType.Kill:
 
-                //string[] killerPlusKilled = commandPlusData[1].Split("<k>");
-                //int killerId = int.Parse(killerPlusKilled[0]);
-                //int killedId = int.Parse(killerPlusKilled[1]);
-                //clientObjects[killerId].AddKill();
-                //clientObjects[killedId].Die();
-                break;
+            //    //string[] killerPlusKilled = commandPlusData[1].Split("<k>");
+            //    //int killerId = int.Parse(killerPlusKilled[0]);
+            //    //int killedId = int.Parse(killerPlusKilled[1]);
+            //    //clientObjects[killerId].AddKill();
+            //    //clientObjects[killedId].Die();
+            //    break;
             case CommandType.HighScore:
-                string[] playerData = commandPlusData[1].Split(",");
-                if (playerData.Length == 2 && int.TryParse(playerData[1], out int playerScore))
-                {
-                    FindObjectOfType<HighScoreManager>().SaveHighScore(playerData[0], playerScore);
-                }
+                UIManager.Instance.SetHighscoreText(commandPlusData[1]);
+
                 break;
             default:
                 break;

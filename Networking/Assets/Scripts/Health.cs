@@ -3,6 +3,7 @@ using UnityEngine.UIElements;
 
 public class Health : MonoBehaviour
 {
+    [SerializeField] private bool isOwner;
     [SerializeField] private float maxHealth;
     private float currentHealth;
 
@@ -16,19 +17,12 @@ public class Health : MonoBehaviour
         currentHealth = health; 
     }
 
-    public void TakeDamageLocal(float damage)
-    {
-        float previousHealth = currentHealth;
-        TakeDamage(damage);
-        int id = GetComponent<LocalClient>().Id;
-        Client.HandleSend($"5<c>{id}<id>{damage},{previousHealth}", Client.SendType.TCP);
-    }
-
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, int damageFrom)
     {
         currentHealth -= damage;
         if (currentHealth <= 0)
         {
+            if (GameManager.Instance.localId == damageFrom) Client.HandleSend($"6<c>{GameManager.Instance.LocalName}", Client.SendType.TCP);
             Die();
         }
     }
