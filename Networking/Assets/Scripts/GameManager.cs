@@ -21,6 +21,8 @@ public class GameManager : Singleton<GameManager>
 
     private Dictionary<int, LocalClient> clientObjects = new Dictionary<int, LocalClient>();
     public int localId = 999;
+    
+    public string highscoreFilePath = "highscores.txt"; 
 
     private List<int> pendingClients = new List<int>();
     private List<int> pendingQuitClients = new List<int>();
@@ -144,7 +146,12 @@ public class GameManager : Singleton<GameManager>
                 //clientObjects[killedId].Die();
                 break;
             case CommandType.HighScore:
-
+                string[] playerData = commandPlusData[1].Split(",");
+                if (playerData.Length == 2 && int.TryParse(playerData[1], out int playerScore))
+                {
+                    FindObjectOfType<HighScoreManager>().SaveHighScore(playerData[0], playerScore);
+                }
+                break;
             default:
                 break;
         }
